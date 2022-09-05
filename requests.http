@@ -1,0 +1,12 @@
+### Get all Users
+GET http://localhost:5000/api/v1/users
+
+
+### Login user
+POST http://localhost:5000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "james@nickjames.com",
+    "password": "password"
+}
