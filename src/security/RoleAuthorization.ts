@@ -8,7 +8,8 @@ export class RoleAuthorization {
     action: Action,
     roles: string[]
   ): Promise<any> {
-    const jwtData = action.request.jwtDatal;
+    const jwtData = action.request.jwtData;
+
     if (!jwtData) {
       throw new UnauthorizedError();
     }

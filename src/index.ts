@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { CurrentUserDecorator } from "./security/CurrentUserDecorator";
 // import { defaultMetadataStorage } from "class-transformer/cjs/storage";
 const { defaultMetadataStorage } = require("class-transformer/cjs/storage");
 
@@ -13,18 +14,32 @@ import {
   useExpressServer,
 } from "routing-controllers";
 import { routingControllersToSpec } from "routing-controllers-openapi";
+import signale from "signale";
 import swaggerUi from "swagger-ui-express";
 import Container from "typedi";
 import dataSource from "./data-source";
 import passportJwtStrategy from "./security/passportJwtStrategy";
+import passportLoginStrategy from "./security/passportLoginStrategy";
+import { RoleAuthorization } from "./security/RoleAuthorization";
 
 const app: Express = express();
 
 const PORT = process.env.PORT || 5000;
 
+// Middlewares
+app.use(express.json());
+useContainer(Container);
+
+// passport
+app.use(passport.initialize());
+passport.use(passportLoginStrategy);
+passport.use(passportJwtStrategy);
+
 const routingControllerOpts: RoutingControllersOptions = {
   routePrefix: "/api/v1",
   controllers: [join(__dirname, "/controllers/*.{js,ts}")],
+  authorizationChecker: RoleAuthorization.checkAuthorization,
+  currentUserChecker: CurrentUserDecorator.checkCurrentUser,
 };
 
 useExpressServer(app, routingControllerOpts);
@@ -53,14 +68,7 @@ const spec = routingControllersToSpec(storage, routingControllerOpts, {
   },
 });
 
-// Middlewares
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
-useContainer(Container);
-
-// passport
-passport.use(passportJwtStrategy);
-
-app.use(passport.initialize());
 
 (async () => {
   try {
@@ -78,14 +86,14 @@ app.use(passport.initialize());
 
     // process.stdout.write("\nER Diagram URL: \n" + url + EOL);
 
-    console.log(`\nConnected to db`);
+    signale.success(`Connected to db\n`);
 
     app.listen(PORT, () =>
-      console.log(
-        `\nExpress server running on http://localhost:${PORT}. Open http://localhost:${PORT}/docs/\n`
+      signale.success(
+        `Express server running on http://localhost:${PORT}. Open http://localhost:${PORT}/docs/\n`
       )
     );
   } catch (error) {
-    console.log("DB Error: ", error);
+    signale.error("DB Error: ", error);
   }
 })();

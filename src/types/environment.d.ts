@@ -10,6 +10,7 @@ declare global {
       DB_NAME: string;
       ACCESS_TOKEN_SECRET: string;
       REFRESH_TOKEN_SECRET: string;
+      ENCRYPTION_KEY: string;
     }
   }
 }

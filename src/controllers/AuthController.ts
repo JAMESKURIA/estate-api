@@ -1,8 +1,9 @@
-import { Body, JsonController, Post } from "routing-controllers";
+import { Body, BodyParam, JsonController, Post } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { Inject, Service } from "typedi";
 import { LoginBodyDto } from "../dto/loginBodyDto";
 import { LoginResponseDto } from "../dto/loginResponseDto";
+import { RefreshTokenResponse } from "../dto/refreshTokenResponse";
 import { RegisterBodyDto } from "../dto/registerBodyDto";
 import { User } from "../models/User";
 import { AuthService } from "../services/AuthService";
@@ -19,17 +20,25 @@ export class AuthController {
   @Inject(AUTH_SERVICE_IMPL)
   private readonly authService!: AuthService;
 
+  // @UseBefore(passportLoginMiddleware)
   @OpenAPI({ summary: "Log in user" })
-  @Post("/login")
   @ResponseSchema(LoginResponseDto)
+  @Post("/login")
   public loginUser(@Body() loginBody: LoginBodyDto) {
     return this.authService.loginUser(loginBody);
   }
 
   @OpenAPI({ summary: "Create a new user" })
   @ResponseSchema(User)
-  @Post()
+  @Post("/register")
   public createUser(@Body() reqBody: RegisterBodyDto) {
     return this.authService.registerUser(reqBody);
+  }
+
+  @OpenAPI({ summary: "Generate a new access token" })
+  @ResponseSchema(RefreshTokenResponse)
+  @Post("/refreshToken")
+  public refreshToken(@BodyParam("token", { required: true }) token: string) {
+    return this.authService.refreshToken(token);
   }
 }

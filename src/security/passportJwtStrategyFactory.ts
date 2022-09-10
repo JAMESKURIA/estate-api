@@ -1,3 +1,4 @@
+// import cookie from "cookie";
 import {
   ExtractJwt,
   JwtFromRequestFunction,
@@ -26,14 +27,14 @@ function passportJwtStrategyFactory({
 }: PassportJwtStrategyFactoryOptions = {}) {
   const jwtFromRequestLayers: JwtFromRequestFunction[] = [];
 
-  //   if (extractJwtFromCookie) {
-  //     jwtFromRequestLayers.push(
-  //       (req) =>
-  //         req &&
-  //         typeof req.headers.cookie === "string" &&
-  //         cookie.parse(req.headers.cookie).token
-  //     );
-  //   }
+  // if (extractJwtFromCookie) {
+  //   jwtFromRequestLayers.push(
+  //     (req) =>
+  //       req &&
+  //       typeof req.headers.cookie === "string" &&
+  //       cookie.parse(req.headers.cookie).token
+  //   );
+  // }
 
   if (extractJwtFromAuthHeaderWithScheme) {
     jwtFromRequestLayers.push(ExtractJwt.fromAuthHeaderWithScheme("jwt"));

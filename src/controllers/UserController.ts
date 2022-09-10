@@ -1,13 +1,22 @@
-import { Get, JsonController } from "routing-controllers";
+import {
+  Authorized,
+  Get,
+  JsonController,
+  UseBefore
+} from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { Inject, Service } from "typedi";
 import { User } from "../models/User";
+import passportJwtMiddleware from "../security/passportJwtMiddleware";
 import { USER_SERVICE_IMPL } from "../services/impl/userServiceImpl";
 import { UserService } from "../services/userService";
 
 // @OpenAPI({
 //   security: [{ basicAuth: [] }],
 // })
+
+@UseBefore(passportJwtMiddleware)
+@Authorized()
 @JsonController("/users")
 @Service()
 export class UserController {
@@ -27,5 +36,4 @@ export class UserController {
   public getAllUsers() {
     return this.userService.getAllUsers();
   }
-
 }

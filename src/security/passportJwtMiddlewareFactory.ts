@@ -1,4 +1,7 @@
-import { authenticate } from "passport";
+import passport from "passport";
 
 export default (stragegy: string | string[]) =>
-  authenticate(stragegy, { session: false, assignProperty: "jwtData" });
+  passport.authenticate(stragegy, {
+    session: false,
+    assignProperty: "jwtData",
+  });
