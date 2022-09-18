@@ -1,12 +1,12 @@
-// import cookie from "cookie";
+// import { cookie } from 'cookie';
 import {
   ExtractJwt,
   JwtFromRequestFunction,
   Strategy as JwtStrategy,
   StrategyOptions,
 } from "passport-jwt";
+import { UserRepository } from "../repositories/UserRepository";
 import { VerifiedCallback } from "./../../node_modules/@types/passport-jwt/index.d";
-import { UserRepository } from "./../repository/UserRepository";
 
 interface PassportJwtStrategyFactoryOptions {
   name?: String;
@@ -27,14 +27,13 @@ function passportJwtStrategyFactory({
 }: PassportJwtStrategyFactoryOptions = {}) {
   const jwtFromRequestLayers: JwtFromRequestFunction[] = [];
 
-  // if (extractJwtFromCookie) {
-  //   jwtFromRequestLayers.push(
-  //     (req) =>
-  //       req &&
-  //       typeof req.headers.cookie === "string" &&
-  //       cookie.parse(req.headers.cookie).token
-  //   );
-  // }
+  if (extractJwtFromCookie) {
+    jwtFromRequestLayers.push(
+      (req) => req.cookies?.token
+      // [req, typeof req.headers.cookie === "string"].every(Boolean) &&
+      //    (cookie.parse(req.headers.cookie).token);
+    );
+  }
 
   if (extractJwtFromAuthHeaderWithScheme) {
     jwtFromRequestLayers.push(ExtractJwt.fromAuthHeaderWithScheme("jwt"));

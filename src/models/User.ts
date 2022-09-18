@@ -1,33 +1,40 @@
-import { Exclude } from "class-transformer";
-import { IsEmail, IsString, IsUUID } from "class-validator";
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { IsString, IsUUID } from "class-validator";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from "typeorm";
+import { Job } from "./Job";
+import { Login } from "./Login";
+import { SubLocation } from "./SubLocation";
 
 @Entity("users")
 export class User {
   @IsUUID()
   @PrimaryColumn("uuid", { name: "user_id" })
   @IsString()
-  id!: string;
+  id?: string;
 
-  @Column("varchar", { name: "user_first_name" })
+  @Column("varchar", { length: 255, name: "user_fname" })
   @IsString()
   fname!: string;
 
-  @Column("varchar", { name: "user_other_names" })
+  @Column("varchar", { length: 255, name: "user_onames" })
   @IsString()
   otherNames!: string;
 
-  @Column("varchar", { length: 30, name: "user_email", unique: true })
-  @IsEmail()
-  @IsString()
-  email!: string;
+  @OneToOne(() => Login)
+  @JoinColumn({ name: "user_login_id" })
+  login?: Login;
 
-  @Exclude()
-  @Column("text", { name: "user_password" })
-  @IsString()
-  password!: string;
+  @ManyToOne(() => SubLocation, (subLocation) => subLocation.users)
+  @JoinColumn({ name: "user_sub_location_id" })
+  subLocation!: SubLocation;
 
-  getFullName() {
-    return this.fname + " " + this.otherNames;
-  }
+  @ManyToMany(() => Job, (job) => job.users)
+  jobs?: Job[];
 }

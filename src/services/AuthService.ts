@@ -1,8 +1,8 @@
 import { JwtPayload } from "jsonwebtoken";
+import { LoginBodyDto } from "../dto/LoginBodyDto";
+import { LoginResponseDto } from "../dto/LoginResponseDto";
+import { RegisterBodyDto } from "../dto/RegisterBodyDto";
 import { User } from "../models/User";
-import { LoginBodyDto } from "./../dto/loginBodyDto";
-import { LoginResponseDto } from "./../dto/loginResponseDto";
-import { RegisterBodyDto } from "./../dto/registerBodyDto";
 export interface AuthService {
   loginUser(loginDetails: LoginBodyDto): Promise<LoginResponseDto>;
 

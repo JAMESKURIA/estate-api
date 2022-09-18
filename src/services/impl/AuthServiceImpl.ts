@@ -4,34 +4,35 @@ import { JwtPayload, Secret, verify } from "jsonwebtoken";
 import {
   BadRequestError,
   ForbiddenError,
-  InternalServerError,
   NotFoundError,
   UnauthorizedError,
 } from "routing-controllers";
+import { SubLocationRepo } from "../../repositories/SubLocationRepo";
 // import signale from "signale";
 import { Service } from "typedi";
 import { v4 as uuidv4 } from "uuid";
-import { LoginBodyDto } from "../../dto/loginBodyDto";
-import { LoginResponseDto } from "../../dto/loginResponseDto";
-import { RegisterBodyDto } from "../../dto/registerBodyDto";
+import { LoginBodyDto } from "../../dto/LoginBodyDto";
+import { LoginResponseDto } from "../../dto/LoginResponseDto";
+import { RegisterBodyDto } from "../../dto/RegisterBodyDto";
+import { Login } from "../../models/Login";
 import { User } from "../../models/User";
-import { UserRepository } from "../../repository/UserRepository";
+import { LoginRepository } from "../../repositories/LoginRepository";
+import { TokenRepository } from "../../repositories/TokenRepository";
 import { JwtUtils } from "../../security/JwtUtils";
 import { AuthService } from "../AuthService";
-import { TokenRepository } from "./../../repository/TokenRepository";
 
 export const AUTH_SERVICE_IMPL = "AuthServiceImpl";
 
 @Service(AUTH_SERVICE_IMPL)
 export class AuthServiceImpl implements AuthService {
-  private readonly userRepo = UserRepository;
+  private readonly loginRepo = LoginRepository;
 
   public async loginUser(
     loginDetails: LoginBodyDto
   ): Promise<LoginResponseDto> {
     await validateOrReject(loginDetails);
 
-    const user = await this.userRepo.findOneBy({ email: loginDetails.email });
+    const user = await this.loginRepo.findOneBy({ email: loginDetails.email });
 
     if (!user) throw new NotFoundError("User not found");
 
@@ -42,8 +43,11 @@ export class AuthServiceImpl implements AuthService {
 
     const tokenId = uuidv4();
 
-    const accessToken = JwtUtils.generateAccessToken(user);
-    const refreshToken = JwtUtils.generateRefreshToken({ tokenId, user });
+    const accessToken = JwtUtils.generateAccessToken(user.user);
+    const refreshToken = JwtUtils.generateRefreshToken({
+      tokenId,
+      user: user.user,
+    });
 
     // Save token to database
     TokenRepository.save({ id: tokenId, token: refreshToken });
@@ -52,15 +56,30 @@ export class AuthServiceImpl implements AuthService {
   }
 
   public async registerUser(userDetails: RegisterBodyDto): Promise<User> {
-    try {
-      await validateOrReject(userDetails);
+    await validateOrReject(userDetails);
 
-      const savedUser = await this.userRepo.save(userDetails);
+    const subLocation = await SubLocationRepo.findOneBy({
+      id: userDetails.subLocationId,
+    });
 
-      return savedUser;
-    } catch (error) {
-      throw new InternalServerError("Internal Server error");
-    }
+    if (!subLocation) throw new BadRequestError("Sublocation does not exist!");
+
+    const user: User = {
+      fname: userDetails?.fname,
+      otherNames: userDetails.otherNames,
+      subLocation: subLocation,
+    };
+
+    const userToSave: Login = {
+      user,
+      ...userDetails,
+    };
+
+    const savedUser = await this.loginRepo.save(userToSave);
+
+    console.log("Saved User: ", savedUser.user);
+
+    return savedUser.user;
   }
 
   public refreshToken(token: string) {
@@ -71,24 +90,20 @@ export class AuthServiceImpl implements AuthService {
       async (err, payload) => {
         if (err) throw new UnauthorizedError("Token is invalid");
 
-        try {
-          const id: string = (payload as JwtPayload).tokenId;
+        const id: string = (payload as JwtPayload).tokenId;
 
-          const savedToken = await TokenRepository.findOneBy({ id });
+        const savedToken = await TokenRepository.findOneBy({ id });
 
-          if (!savedToken) throw new ForbiddenError("Token unidentified");
+        if (!savedToken) throw new ForbiddenError("Token unidentified");
 
-          // signale.log("Saved Token", savedToken);
+        // signale.log("Saved Token", savedToken);
 
-          if (savedToken.token !== token)
-            throw new ForbiddenError("Invalid Token");
+        if (savedToken.token !== token)
+          throw new ForbiddenError("Invalid Token");
 
-          const user: User = (payload as JwtPayload).user;
+        const user: User = (payload as JwtPayload).user;
 
-          return { accessToken: JwtUtils.generateAccessToken(user) };
-        } catch (error) {
-          throw new InternalServerError("an error occurred (token)");
-        }
+        return { accessToken: JwtUtils.generateAccessToken(user) };
       }
     );
   }

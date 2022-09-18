@@ -1,15 +1,15 @@
 import { Body, BodyParam, JsonController, Post } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { Inject, Service } from "typedi";
-import { LoginBodyDto } from "../dto/loginBodyDto";
-import { LoginResponseDto } from "../dto/loginResponseDto";
-import { RefreshTokenResponse } from "../dto/refreshTokenResponse";
-import { RegisterBodyDto } from "../dto/registerBodyDto";
+import { LoginBodyDto } from "../dto/LoginBodyDto";
+import { LoginResponseDto } from "../dto/LoginResponseDto";
+import { RefreshTokenResponse } from "../dto/RefreshTokenResponse";
+import { RegisterBodyDto } from "../dto/RegisterBodyDto";
 import { User } from "../models/User";
 import { AuthService } from "../services/AuthService";
 import { AUTH_SERVICE_IMPL } from "../services/impl/AuthServiceImpl";
 import { USER_SERVICE_IMPL } from "../services/impl/userServiceImpl";
-import { UserService } from "../services/userService";
+import { UserService } from "../services/UserService";
 
 @JsonController("/auth")
 @Service()

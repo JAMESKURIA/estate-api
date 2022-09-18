@@ -1,0 +1,13 @@
+[9/11/2022] [3:19:18 PM] [deleteTest.js] › ✖  error     Message will appear on both `process.stdout` & `process.stderr`
+[9/11/2022] [3:19:18 PM] [deleteTest.js] › ✖  error     ererer
+[9/11/2022] [3:19:52 PM] [deleteTest.js] › ✖  error     Message will appear on both `process.stdout` & `process.stderr`
+[9/11/2022] [3:19:52 PM] [deleteTest.js] › ✖  error     ererer
+[9/11/2022] [3:20:27 PM] [deleteTest.js] › ✔  success   Message will appear on `process.stderr`
+[9/11/2022] [3:20:27 PM] [deleteTest.js] › ✖  error     Message will appear on both `process.stdout` & `process.stderr`
+[9/11/2022] [3:20:27 PM] [deleteTest.js] › ✖  error     ererer
+[9/11/2022] [3:28:16 PM] [deleteTest.js] › ✔  success   Message will appear on `process.stderr`
+[9/11/2022] [3:28:16 PM] [deleteTest.js] › ✖  error     Message will appear on both `process.stdout` & `process.stderr`
+[9/11/2022] [3:28:16 PM] [deleteTest.js] › ✖  error     ererer
+[9/11/2022] [3:30:20 PM] [deleteTest.js] › ✔  success   Message will appear on `process.stderr`
+[9/11/2022] [3:30:20 PM] [deleteTest.js] › ✖  error     Message will appear on both `process.stdout` & `process.stderr`
+[9/11/2022] [3:30:20 PM] [deleteTest.js] › ✖  error     ererer

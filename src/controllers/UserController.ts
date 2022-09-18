@@ -2,14 +2,14 @@ import {
   Authorized,
   Get,
   JsonController,
-  UseBefore
+  UseBefore,
 } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { Inject, Service } from "typedi";
 import { User } from "../models/User";
 import passportJwtMiddleware from "../security/passportJwtMiddleware";
 import { USER_SERVICE_IMPL } from "../services/impl/userServiceImpl";
-import { UserService } from "../services/userService";
+import { UserService } from "../services/UserService";
 
 // @OpenAPI({
 //   security: [{ basicAuth: [] }],

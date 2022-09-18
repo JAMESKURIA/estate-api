@@ -1,5 +1,5 @@
 import { Action, UnauthorizedError } from "routing-controllers";
-import { UserRepository } from "./../repository/UserRepository";
+import { UserRepository } from "../repositories/UserRepository";
 
 const userRepo = UserRepository;
 
@@ -23,7 +23,7 @@ export class RoleAuthorization {
         return true;
       }
 
-      //   TODO: Query user roles
+      // TODO: Query user roles
       // if (user && (roles.indexOf(user.role) !== -1)) {
       //     return true;
       //   }

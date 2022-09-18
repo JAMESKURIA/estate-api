@@ -1,6 +1,12 @@
-import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Length,
+} from "class-validator";
 import { IsUnique } from "../validators/IsUnique";
-import { LoginBodyDto } from "./loginBodyDto";
+import { LoginBodyDto } from "./LoginBodyDto";
 
 export class RegisterBodyDto extends LoginBodyDto {
   @IsString()
@@ -17,4 +23,8 @@ export class RegisterBodyDto extends LoginBodyDto {
   @IsString()
   @IsNotEmpty()
   otherNames!: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  subLocationId!: number;
 }

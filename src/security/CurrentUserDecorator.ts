@@ -1,6 +1,6 @@
 import { Action } from "routing-controllers";
+import { UserRepository } from "../repositories/UserRepository";
 import { User } from "./../models/User";
-import { UserRepository } from "./../repository/UserRepository";
 
 export class CurrentUserDecorator {
   static checkCurrentUser(action: Action): Promise<User | null> {

@@ -1,8 +1,8 @@
 import { NotFoundError } from "routing-controllers";
 import { Service } from "typedi";
 import { User } from "../../models/User";
-import { UserRepository } from "../../repository/UserRepository";
-import { UserService } from "../userService";
+import { UserRepository } from "../../repositories/UserRepository";
+import { UserService } from "../UserService";
 
 export const USER_SERVICE_IMPL = "UserServiceImpl";
 

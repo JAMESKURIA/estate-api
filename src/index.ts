@@ -4,6 +4,7 @@ import { CurrentUserDecorator } from "./security/CurrentUserDecorator";
 const { defaultMetadataStorage } = require("class-transformer/cjs/storage");
 
 import { validationMetadatasToSchemas } from "class-validator-jsonschema";
+import cookieParser from "cookie-parser";
 import express, { Express } from "express";
 import passport from "passport";
 import { join } from "path";
@@ -27,6 +28,7 @@ const app: Express = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
+app.use(cookieParser());
 app.use(express.json());
 useContainer(Container);
 

@@ -3,18 +3,18 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from "class-validator";
-import { UserRepository } from "./../repository/UserRepository";
+import { LoginRepository } from "../repositories/LoginRepository";
 
 @ValidatorConstraint({ async: true })
 export class UniqueConstraint implements ValidatorConstraintInterface {
-  private readonly userRepository = UserRepository;
+  private readonly loginRepository = LoginRepository;
 
   async validate(value: any, args: ValidationArguments) {
     let user;
 
     switch (args.property) {
       case "email":
-        user = await this.userRepository.findOneBy({ email: value });
+        user = await this.loginRepository.findOneBy({ email: value });
         break;
 
       default:

@@ -5,19 +5,19 @@ import {
   InsertEvent,
 } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
-import { User } from "../models/User";
+import { Login } from "../models/Login";
 
 @EventSubscriber()
-export class LoginSubscriber implements EntitySubscriberInterface<User> {
+export class LoginSubscriber implements EntitySubscriberInterface<Login> {
   listenTo() {
-    return User;
+    return Login;
   }
 
-  // afterLoad(entity: User) {
+  // afterLoad(entity: Login) {
   //   console.log(`AFTER ENTITY LOADED: `, entity);
   // }
 
-  async beforeInsert(event: InsertEvent<User>) {
+  async beforeInsert(event: InsertEvent<Login>) {
     const password: string = event.entity.password;
 
     const salt: string = await bcrypt.genSalt(10);
