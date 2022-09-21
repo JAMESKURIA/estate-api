@@ -1,5 +1,6 @@
 import { Exclude } from "class-transformer";
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -11,7 +12,7 @@ import { User } from "./User";
 import { UserRole } from "./UserRole";
 
 @Entity("login")
-export class Login {
+export class Login extends BaseEntity {
   @Exclude()
   @PrimaryColumn("uuid", { name: "login_id" })
   id?: string;
@@ -23,7 +24,7 @@ export class Login {
   @Column("text", { name: "login_password" })
   password!: string;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { cascade: true })
   user!: User;
 
   @ManyToOne(() => UserRole, (userRole) => userRole.logins)

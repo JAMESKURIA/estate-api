@@ -1,8 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { SubLocation } from "./SubLocation";
 
 @Entity("location")
-export class Location {
+export class Location extends BaseEntity {
   @PrimaryGeneratedColumn("increment", { name: "location_id" })
   id!: number;
 

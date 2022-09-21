@@ -1,5 +1,6 @@
 import { IsString, IsUUID } from "class-validator";
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -13,7 +14,7 @@ import { Login } from "./Login";
 import { SubLocation } from "./SubLocation";
 
 @Entity("users")
-export class User {
+export class User extends BaseEntity {
   @IsUUID()
   @PrimaryColumn("uuid", { name: "user_id" })
   @IsString()

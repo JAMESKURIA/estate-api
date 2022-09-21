@@ -8,13 +8,13 @@ import {
   UnauthorizedError,
 } from "routing-controllers";
 import { SubLocationRepo } from "../../repositories/SubLocationRepo";
+import { UserRepository } from "./../../repositories/UserRepository";
 // import signale from "signale";
 import { Service } from "typedi";
 import { v4 as uuidv4 } from "uuid";
 import { LoginBodyDto } from "../../dto/LoginBodyDto";
 import { LoginResponseDto } from "../../dto/LoginResponseDto";
 import { RegisterBodyDto } from "../../dto/RegisterBodyDto";
-import { Login } from "../../models/Login";
 import { User } from "../../models/User";
 import { LoginRepository } from "../../repositories/LoginRepository";
 import { TokenRepository } from "../../repositories/TokenRepository";
@@ -58,22 +58,21 @@ export class AuthServiceImpl implements AuthService {
   public async registerUser(userDetails: RegisterBodyDto): Promise<User> {
     await validateOrReject(userDetails);
 
+    const { subLocationId, email, password, ..._user } = userDetails;
+
     const subLocation = await SubLocationRepo.findOneBy({
-      id: userDetails.subLocationId,
+      id: subLocationId,
     });
 
     if (!subLocation) throw new BadRequestError("Sublocation does not exist!");
 
-    const user: User = {
-      fname: userDetails?.fname,
-      otherNames: userDetails.otherNames,
-      subLocation: subLocation,
-    };
+    const user = UserRepository.create({ ..._user });
 
-    const userToSave: Login = {
+    const userToSave = LoginRepository.create({
+      email,
+      password,
       user,
-      ...userDetails,
-    };
+    });
 
     const savedUser = await this.loginRepo.save(userToSave);
 

@@ -34,7 +34,7 @@
 
 const items = {
   a: 1,
-  b: 1,
+  b: 0,
   c: "1",
 };
 
@@ -43,7 +43,7 @@ const items = {
 // console.log(![(null, 0, 0)].every(Boolean));
 
 console.log(
-  Object.keys(items)
-    .map((key) => items[key])
+  Object.values(items)
+    // .map((key) => items[key])
     .every(Boolean)
 );

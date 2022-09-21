@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -10,7 +11,7 @@ import { Location } from "./Location";
 import { User } from "./User";
 
 @Entity("sub_locations")
-export class SubLocation {
+export class SubLocation extends BaseEntity {
   @PrimaryGeneratedColumn("increment", { name: "sub_location_id" })
   id?: number;
 

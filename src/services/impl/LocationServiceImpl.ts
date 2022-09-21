@@ -12,8 +12,8 @@ export const LOCATION_SERVICE_IMPL = "LOCATION_SERVICE_IMPL";
 
 @Service(LOCATION_SERVICE_IMPL)
 export class LocationServiceImpl implements LocationService {
-  getAllSubLocations(): Promise<SubLocation[]> {
-    return SubLocationRepo.find();
+  public async getAllSubLocations(): Promise<SubLocation[]> {
+    return await SubLocationRepo.find();
   }
 
   public async getSubLocationById(id: number): Promise<SubLocation | null> {
@@ -39,11 +39,11 @@ export class LocationServiceImpl implements LocationService {
     return savedLocation;
   }
 
-  getAllLocations(): Promise<Location[]> {
-    return LocationRepo.find();
+  public async getAllLocations(): Promise<Location[]> {
+    return await LocationRepo.find();
   }
 
-  getLocationById(id: number): Promise<Location | null> {
-    return LocationRepo.findOneBy({ id });
+  public async getLocationById(id: number): Promise<Location | null> {
+    return await LocationRepo.findOneBy({ id });
   }
 }
