@@ -15,6 +15,8 @@ export class Location extends BaseEntity {
   @Column("varchar", { length: 255, name: "location_name" })
   name!: string;
 
-  @OneToMany(() => SubLocation, (subLocation) => subLocation.location)
+  @OneToMany(() => SubLocation, (subLocation) => subLocation.location, {
+    eager: true,
+  })
   subLocations!: SubLocation[];
 }

@@ -1,18 +1,19 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
-  PrimaryColumn
+  PrimaryColumn,
 } from "typeorm";
 import { JobStatus } from "../enums/JobEnums";
 import { Task } from "./Task";
 import { User } from "./User";
 
 @Entity("jobs")
-export class Job {
+export class Job extends BaseEntity {
   @PrimaryColumn("uuid", { name: "job_id" })
   id!: string;
 

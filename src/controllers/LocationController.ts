@@ -34,9 +34,22 @@ export class LocationController {
   @Get("getLocation/:id")
   public async getLocation(@Param("id") locationId: string) {
     const location = await this.locationService.getLocationById(+locationId);
+
     if (!location) throw new NotFoundError("Location not found");
 
     return location;
+  }
+
+  @Get(":locationId/getSubLocations")
+  public async getSubLocationsByLocationId(
+    @Param("locationId") locationId: string
+  ) {
+    const location = await this.locationService.getLocationById(+locationId);
+
+    if (!location)
+      throw new NotFoundError(`Location with id ${locationId} not found`);
+
+    return location.subLocations;
   }
 
   @Post("createSubLocation")

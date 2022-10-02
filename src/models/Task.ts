@@ -1,8 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Job } from "./Job";
 
 @Entity("tasks")
-export class Task {
+export class Task extends BaseEntity {
   @PrimaryGeneratedColumn("increment", { name: "task_id" })
   id!: number;
 

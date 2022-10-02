@@ -66,19 +66,17 @@ export class AuthServiceImpl implements AuthService {
 
     if (!subLocation) throw new BadRequestError("Sublocation does not exist!");
 
-    const user = UserRepository.create({ ..._user });
+    const savedLogin = await LoginRepository.save({ email, password });
 
-    const userToSave = LoginRepository.create({
-      email,
-      password,
-      user,
+    const savedUser = await UserRepository.save({
+      login: savedLogin,
+      subLocation,
+      ..._user,
     });
 
-    const savedUser = await this.loginRepo.save(userToSave);
+    console.log("Saved User: ", savedUser);
 
-    console.log("Saved User: ", savedUser.user);
-
-    return savedUser.user;
+    return savedUser;
   }
 
   public refreshToken(token: string) {

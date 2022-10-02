@@ -36,12 +36,17 @@ AdminJS.registerAdapter({ Database, Resource });
 
 (async () => {
   try {
+    signale.log(`${join(__dirname, "assets/cropped-mobitech-logo.png")}`);
     const connection = await dataSource.initialize();
     signale.success(`Typeorm connected to db\n`);
 
     const adminOptions: AdminJSOptions = {
       resources: [SubLocation, Location, User, Login, UserRole],
-      // databases: [dataSource],
+      branding: {
+        companyName: "Estate",
+        withMadeWithLove: false,
+        logo: `https://mobitechtechnologies.com/wp-content/uploads/2020/06/cropped-mobitech-logo.png`,
+      },
     };
 
     const app: Express = express();
