@@ -1,6 +1,10 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 import { SubLocation } from "../models/SubLocation";
-export class CreateSubLocationDto {
+
+export class LocationDto {
+  @IsNumber()
+  id?: number;
+
   @IsString()
   name!: string;
 

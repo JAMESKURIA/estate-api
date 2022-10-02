@@ -1,3 +1,4 @@
+import { validateOrReject } from "class-validator";
 import { Body, BodyParam, JsonController, Post } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { Inject, Service } from "typedi";
@@ -24,7 +25,9 @@ export class AuthController {
   @OpenAPI({ summary: "Log in user" })
   @ResponseSchema(LoginResponseDto)
   @Post("/login")
-  public loginUser(@Body() loginBody: LoginBodyDto) {
+  public async loginUser(@Body() loginBody: LoginBodyDto) {
+    await validateOrReject(loginBody);
+
     return this.authService.loginUser(loginBody);
   }
 

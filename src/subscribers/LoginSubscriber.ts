@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import signale from "signale";
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -34,8 +33,6 @@ export class LoginSubscriber implements EntitySubscriberInterface<Login> {
     const userRole = await UserRoleRepository.findOneBy({
       name: RoleName.CLIENT,
     });
-    signale.log(userRole);
-    signale.log("ROLE: ", event.entity.role);
 
     event.entity.role =
       event.entity.role === undefined

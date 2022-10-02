@@ -30,23 +30,29 @@ export class AuthServiceImpl implements AuthService {
   public async loginUser(
     loginDetails: LoginBodyDto
   ): Promise<LoginResponseDto> {
-    await validateOrReject(loginDetails);
+    const login = await this.loginRepo.findOne({
+      where: {
+        email: loginDetails.email,
+      },
+      relations: {
+        user: true,
+      },
+    });
 
-    const user = await this.loginRepo.findOneBy({ email: loginDetails.email });
-
-    if (!user) throw new NotFoundError("User not found");
+    if (!login) throw new NotFoundError("User not found");
 
     // compare password
-    const passwordsMatch = await compare(loginDetails.password, user.password);
+    const passwordsMatch = await compare(loginDetails.password, login.password);
 
     if (!passwordsMatch) throw new BadRequestError("Incorrect password");
 
     const tokenId = uuidv4();
 
-    const accessToken = JwtUtils.generateAccessToken(user.user);
+    const accessToken = JwtUtils.generateAccessToken(login.user);
+
     const refreshToken = JwtUtils.generateRefreshToken({
       tokenId,
-      user: user.user,
+      user: login.user,
     });
 
     // Save token to database
@@ -73,8 +79,6 @@ export class AuthServiceImpl implements AuthService {
       subLocation,
       ..._user,
     });
-
-    console.log("Saved User: ", savedUser);
 
     return savedUser;
   }

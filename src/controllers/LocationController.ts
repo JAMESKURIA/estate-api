@@ -1,3 +1,4 @@
+import { validateOrReject } from "class-validator";
 import {
   Body,
   Get,
@@ -7,10 +8,10 @@ import {
   Post,
 } from "routing-controllers";
 import { Inject, Service } from "typedi";
-import { CreateSubLocationDto } from "../dto/CreateSubLocationDto";
+import { LocationDto } from "../dto/LocationDto";
+import { SubLocationDto } from "../dto/SubLocationDto";
 import { Location } from "../models/Location";
 import { LOCATION_SERVICE_IMPL } from "../services/impl/LocationServiceImpl";
-import { CreateLocationDto } from "./../dto/CreateLocationDto";
 import { LocationService } from "./../services/LocationService";
 
 @JsonController("/location/")
@@ -19,11 +20,17 @@ export class LocationController {
   @Inject(LOCATION_SERVICE_IMPL)
   private readonly locationService!: LocationService;
 
-  @Post("createLocation")
+  @Post("createOrUpdateLocation")
   public async createOrUpdateLocation(
-    @Body() location: CreateLocationDto
+    @Body() location: LocationDto
   ): Promise<Location> {
-    return await this.locationService.createOrUpdateLocation(location);
+    await validateOrReject(location);
+
+    if (location?.id) {
+      return await this.locationService.updateLocation(location);
+    }
+
+    return await this.locationService.createLocation(location);
   }
 
   @Get("getLocations")
@@ -31,8 +38,8 @@ export class LocationController {
     return await this.locationService.getAllLocations();
   }
 
-  @Get("getLocation/:id")
-  public async getLocation(@Param("id") locationId: string) {
+  @Get("getLocation/:locationId")
+  public async getLocation(@Param("locationId") locationId: string) {
     const location = await this.locationService.getLocationById(+locationId);
 
     if (!location) throw new NotFoundError("Location not found");
@@ -52,11 +59,14 @@ export class LocationController {
     return location.subLocations;
   }
 
-  @Post("createSubLocation")
-  public async createOrUpdateSubLocation(
-    @Body() subLocation: CreateSubLocationDto
-  ) {
-    return await this.locationService.createOrUpdateSubLocation(subLocation);
+  @Post("createOrUpdateSubLocation")
+  public async createOrUpdateSubLocation(@Body() subLocation: SubLocationDto) {
+    await validateOrReject(subLocation);
+
+    if (subLocation?.id)
+      return await this.locationService.updateSubLocation(subLocation);
+
+    return this.locationService.createSubLocation(subLocation);
   }
 
   @Get("getSubLocations")
@@ -64,8 +74,8 @@ export class LocationController {
     return await this.locationService.getAllSubLocations();
   }
 
-  @Get("getSubLocation/:id")
-  public async getSubLocation(@Param("id") subLocationId: string) {
+  @Get("getSubLocation/:subLocationId")
+  public async getSubLocation(@Param("subLocationId") subLocationId: string) {
     const subLocation = await this.locationService.getSubLocationById(
       +subLocationId
     );

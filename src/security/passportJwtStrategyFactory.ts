@@ -64,9 +64,9 @@ function passportJwtStrategyFactory({
     secretOrKey: process.env.ACCESS_TOKEN_SECRET,
   };
 
-  const verify: VerifiedCallback = async (payload, done) => {
+  const verify: VerifiedCallback = async (payload: any, done: any) => {
     try {
-      const user = await userRepo.findOneBy({ id: payload.id });
+      const user = await userRepo.findOneBy({ id: payload?.id });
 
       if (user) {
         done(null, { tokenPayload: payload });
