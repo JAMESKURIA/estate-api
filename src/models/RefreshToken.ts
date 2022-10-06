@@ -10,4 +10,8 @@ export class RefreshToken {
   @IsString()
   @Column("text")
   token!: string;
+
+  @IsString()
+  @Column()
+  valid!: boolean;
 }

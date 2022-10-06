@@ -24,7 +24,10 @@ export class JwtUtils {
   }) {
     return sign(
       { tokenId, user: { ...user } },
-      process.env.REFRESH_TOKEN_SECRET as Secret
+      process.env.REFRESH_TOKEN_SECRET as Secret,
+      {
+        expiresIn: "1d",
+      }
     );
   }
 }

@@ -45,7 +45,7 @@ AdminJS.registerAdapter({ Database, Resource });
       branding: {
         companyName: "Estate",
         withMadeWithLove: false,
-        logo: `https://mobitechtechnologies.com/wp-content/uploads/2020/06/cropped-mobitech-logo.png`,
+        // logo: `https://mobitechtechnologies.com/wp-content/uploads/2020/06/cropped-mobitech-logo.png`,
       },
     };
 

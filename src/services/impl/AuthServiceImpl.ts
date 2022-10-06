@@ -8,6 +8,7 @@ import {
   UnauthorizedError,
 } from "routing-controllers";
 import { SubLocationRepo } from "../../repositories/SubLocationRepo";
+import { UserRole } from "./../../models/UserRole";
 import { UserRepository } from "./../../repositories/UserRepository";
 // import signale from "signale";
 import { Service } from "typedi";
@@ -15,6 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import { LoginBodyDto } from "../../dto/LoginBodyDto";
 import { LoginResponseDto } from "../../dto/LoginResponseDto";
 import { RegisterBodyDto } from "../../dto/RegisterBodyDto";
+import { RefreshToken } from "../../models/RefreshToken";
 import { User } from "../../models/User";
 import { LoginRepository } from "../../repositories/LoginRepository";
 import { TokenRepository } from "../../repositories/TokenRepository";
@@ -36,6 +38,12 @@ export class AuthServiceImpl implements AuthService {
       },
       relations: {
         user: true,
+        role: true,
+      },
+      select: {
+        role: {
+          name: true,
+        },
       },
     });
 
@@ -56,9 +64,9 @@ export class AuthServiceImpl implements AuthService {
     });
 
     // Save token to database
-    TokenRepository.save({ id: tokenId, token: refreshToken });
+    TokenRepository.save({ id: tokenId, token: refreshToken, valid: true });
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, role: login.role as UserRole };
   }
 
   public async registerUser(userDetails: RegisterBodyDto): Promise<User> {
@@ -83,8 +91,11 @@ export class AuthServiceImpl implements AuthService {
     return savedUser;
   }
 
-  public refreshToken(token: string) {
-    // verify token
+  public async getRefreshToken(id: string): Promise<RefreshToken | null> {
+    return await TokenRepository.findOneBy({ id });
+  }
+
+  public async verifyToken(token: string): Promise<any> {
     return verify(
       token,
       process.env.REFRESH_TOKEN_SECRET as Secret,
@@ -93,19 +104,42 @@ export class AuthServiceImpl implements AuthService {
 
         const id: string = (payload as JwtPayload).tokenId;
 
-        const savedToken = await TokenRepository.findOneBy({ id });
+        const savedToken = await this.getRefreshToken(id);
 
-        if (!savedToken) throw new ForbiddenError("Token unidentified");
+        if (!savedToken) throw new UnauthorizedError("Token unidentified");
 
         // signale.log("Saved Token", savedToken);
+        if (!savedToken.valid) throw new UnauthorizedError();
 
         if (savedToken.token !== token)
           throw new ForbiddenError("Invalid Token");
 
-        const user: User = (payload as JwtPayload).user;
-
-        return { accessToken: JwtUtils.generateAccessToken(user) };
+        return payload;
       }
     );
+  }
+
+  public async refreshToken(token: string) {
+    // verify token
+    const payload = await this.verifyToken(token);
+
+    const user: User = (payload as JwtPayload).user;
+
+    return { accessToken: JwtUtils.generateAccessToken(user) };
+  }
+
+  public async invalidateRefreshToken(id: string): Promise<void> {
+    const token = await this.getRefreshToken(id);
+
+    if (!token) throw new UnauthorizedError("Invalidate refresh token");
+
+    TokenRepository.save({ ...token, valid: false });
+  }
+
+  public async logout(token: string): Promise<void> {
+    // TODO: Invalidate the saved token
+    const payload = await this.verifyToken(token);
+
+    await this.invalidateRefreshToken(payload?.tokenId);
   }
 }

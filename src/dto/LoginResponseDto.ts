@@ -1,4 +1,5 @@
 import { IsString } from "class-validator";
+import { UserRole } from "./../models/UserRole";
 
 export class LoginResponseDto {
   @IsString()
@@ -6,4 +7,7 @@ export class LoginResponseDto {
 
   @IsString()
   refreshToken!: string;
+
+  @IsString()
+  role!: UserRole;
 }
