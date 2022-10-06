@@ -7,6 +7,18 @@ export class CurrentUserDecorator {
     const jwtData = action.request.jwtData;
     const userId = jwtData.tokePayload.id;
 
-    return UserRepository.findOneBy({ id: userId });
+    return UserRepository.findOne({
+      where: {
+        id: userId,
+      },
+      relations: {
+        login: true,
+      },
+      select: {
+        login: {
+          email: true,
+        },
+      },
+    });
   }
 }

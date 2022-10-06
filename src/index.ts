@@ -36,7 +36,6 @@ AdminJS.registerAdapter({ Database, Resource });
 
 (async () => {
   try {
-    signale.log(`${join(__dirname, "assets/cropped-mobitech-logo.png")}`);
     const connection = await dataSource.initialize();
     signale.success(`Typeorm connected to db\n`);
 

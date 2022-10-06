@@ -61,12 +61,12 @@ export class AuthController {
 
   @OpenAPI({ summary: "Generate a new access token" })
   @ResponseSchema(RefreshTokenResponse)
-  @Post("/refreshToken")
+  @Get("/refreshToken")
   public refreshToken(@CookieParam("jwt", { required: true }) token: string) {
     return this.authService.refreshToken(token);
   }
 
-  @Get("/logout")
+  @Post("/logout")
   public async logout(@CookieParam("jwt") token: string, @Res() res: Response) {
     if (!token) return res.sendStatus(204);
 

@@ -11,7 +11,21 @@ export class UserServiceImpl implements UserService {
   private readonly userRepo = UserRepository;
 
   public async getAllUsers(): Promise<User[]> {
-    return await this.userRepo.find();
+    return await this.userRepo.find({
+      relations: {
+        login: {
+          role: true,
+        },
+      },
+      select: {
+        login: {
+          email: true,
+          role: {
+            name: true,
+          },
+        },
+      },
+    });
   }
 
   public async getUserbyId(id: string): Promise<User | null> {

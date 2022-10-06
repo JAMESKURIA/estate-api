@@ -16,7 +16,7 @@ import { UserService } from "../services/UserService";
 // })
 
 @UseBefore(passportJwtMiddleware)
-@Authorized()
+@Authorized(["admin"])
 @JsonController("/users")
 @Service()
 export class UserController {
@@ -28,6 +28,9 @@ export class UserController {
     responses: {
       "500": {
         description: "Internal server Error",
+      },
+      "401": {
+        description: "Unauthorized",
       },
     },
   })
