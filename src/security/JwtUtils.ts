@@ -10,7 +10,7 @@ export class JwtUtils {
       instanceToPlain(user),
       process.env.ACCESS_TOKEN_SECRET as Secret,
       {
-        expiresIn: "30s",
+        expiresIn: "5m",
       }
     );
   }
