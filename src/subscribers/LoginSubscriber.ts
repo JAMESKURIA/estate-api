@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { Service } from "typedi";
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -10,6 +11,7 @@ import { Login } from "../models/Login";
 import { UserRole } from "../models/UserRole";
 import { UserRoleRepository } from "../repositories/UserRoleRepository";
 
+@Service()
 @EventSubscriber()
 export class LoginSubscriber implements EntitySubscriberInterface<Login> {
   listenTo() {
@@ -33,6 +35,8 @@ export class LoginSubscriber implements EntitySubscriberInterface<Login> {
     const userRole = await UserRoleRepository.findOneBy({
       name: RoleName.CLIENT,
     });
+
+    if (!userRole) return;
 
     event.entity.role =
       event.entity.role === undefined

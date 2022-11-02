@@ -16,7 +16,7 @@ import { UserService } from "../services/UserService";
 // })
 
 @UseBefore(passportJwtMiddleware)
-@Authorized(["admin"])
+@Authorized(["admin", "client"])
 @JsonController("/users")
 @Service()
 export class UserController {

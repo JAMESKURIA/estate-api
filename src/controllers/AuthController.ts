@@ -66,6 +66,14 @@ export class AuthController {
     return this.authService.refreshToken(token);
   }
 
+  @OpenAPI({
+    summary: "Logout user",
+    responses: {
+      "204": {
+        description: "No Content",
+      },
+    },
+  })
   @Post("/logout")
   public async logout(@CookieParam("jwt") token: string, @Res() res: Response) {
     if (!token) return res.sendStatus(204);

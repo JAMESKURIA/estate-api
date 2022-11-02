@@ -15,6 +15,6 @@ export class Task extends BaseEntity {
   @Column("varchar", { length: 255, name: "task_name" })
   name!: string;
 
-  @OneToMany(() => Job, (job) => job.tasks)
+  @OneToMany(() => Job, (job) => job.task)
   jobs!: Job[];
 }

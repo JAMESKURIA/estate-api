@@ -23,9 +23,11 @@ import signale from "signale";
 import swaggerUi from "swagger-ui-express";
 import Container from "typedi";
 import dataSource from "./data-source";
+import { Job } from "./models/Job";
 import { Location } from "./models/Location";
 import { Login } from "./models/Login";
 import { SubLocation } from "./models/SubLocation";
+import { Task } from "./models/Task";
 import { User } from "./models/User";
 import { UserRole } from "./models/UserRole";
 import passportJwtStrategy from "./security/passportJwtStrategy";
@@ -40,7 +42,7 @@ AdminJS.registerAdapter({ Database, Resource });
     signale.success(`Typeorm connected to db\n`);
 
     const adminOptions: AdminJSOptions = {
-      resources: [SubLocation, Location, User, Login, UserRole],
+      resources: [SubLocation, Location, User, Login, UserRole, Job, Task],
       branding: {
         companyName: "Estate",
         withMadeWithLove: false,
@@ -70,6 +72,7 @@ AdminJS.registerAdapter({ Database, Resource });
       controllers: [join(__dirname, "/controllers/*.{js,ts}")],
       authorizationChecker: RoleAuthorization.checkAuthorization,
       currentUserChecker: CurrentUserDecorator.checkCurrentUser,
+      cors: true,
     };
 
     useExpressServer(app, routingControllerOpts);
@@ -113,7 +116,7 @@ AdminJS.registerAdapter({ Database, Resource });
     // process.stdout.write("\nER Diagram URL: \n" + url + EOL);
 
     app.listen(PORT, () => {
-      signale.success(`Express server running on http://localhost:${PORT}\n`);
+      signale.success(`Express server running on port ${PORT}\n`);
 
       signale.success(`Open Swagger docs on http://localhost:${PORT}/docs/\n`);
 

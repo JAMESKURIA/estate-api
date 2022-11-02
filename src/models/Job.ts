@@ -49,5 +49,5 @@ export class Job extends BaseEntity {
 
   @ManyToOne(() => Task, (task) => task.jobs)
   @JoinColumn({ name: "job_task_id" })
-  tasks!: Task[];
+  task!: Task;
 }
