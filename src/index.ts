@@ -72,7 +72,9 @@ AdminJS.registerAdapter({ Database, Resource });
       controllers: [join(__dirname, "/controllers/*.{js,ts}")],
       authorizationChecker: RoleAuthorization.checkAuthorization,
       currentUserChecker: CurrentUserDecorator.checkCurrentUser,
-      cors: true,
+      cors: {
+        origin: ["http://localhost:3000", "https://127.0.0.1:3000"],
+      },
     };
 
     useExpressServer(app, routingControllerOpts);
